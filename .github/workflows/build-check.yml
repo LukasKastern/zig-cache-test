@@ -1,0 +1,30 @@
+name: Build Check
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+           
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+       
+      - name: Update submodules (using SSH)
+        run: git submodule update --init --recursive
+  
+      - name: Install Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          cache-key: build-check
+
+           
+      - name: Build Supervisor
+        run: zig build -Dtarget=x86_64-linux-gnu -Doptimize=ReleaseFast --summary new
+
+
