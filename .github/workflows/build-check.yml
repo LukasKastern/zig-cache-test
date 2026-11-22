@@ -27,4 +27,16 @@ jobs:
       - name: Build Supervisor
         run: zig build -Dtarget=x86_64-linux-gnu -Doptimize=ReleaseFast --summary new
 
+      - name: Package Zig cache
+        run: |
+          tar -C "$GITHUB_WORKSPACE" \
+            -czf /tmp/zig-cache.tar.gz \
+            .zig-cache
+
+      - name: Upload Zig cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: zig-cache
+          path: /tmp/zig-cache.tar.gz
+          retention-days: 3
 
